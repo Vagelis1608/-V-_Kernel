@@ -21,3 +21,10 @@ mount -o ro,remount /system
 for FILE in /system/etc/init.d/*; do
      sh $FILE >/dev/null
 done;
+
+# Start userinit.d
+if [ -e /sdcard/userinit.d ]; then
+     for FILE in /sdcard/userinit.d/*; do
+          sh $FILE >/dev/null
+     done;
+fi
