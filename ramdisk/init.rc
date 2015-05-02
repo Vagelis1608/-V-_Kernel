@@ -71,6 +71,10 @@ loglevel 3
     mkdir /mnt/media_rw 0700 media_rw media_rw
     mkdir /storage 0751 root sdcard_r
 
+    # -V- Kernel Mods
+    # by Vagelis1608 @xda-developers
+    mkdir /sd-ext 0755 root root
+
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
 
