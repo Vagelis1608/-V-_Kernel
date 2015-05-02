@@ -1,0 +1,50 @@
+
+on init
+	mkdir /cust 0775 system system
+	wait /dev/block/platform/msm_sdcc.1/by-name/cust
+	exec /sbin/setup_fs_static /dev/block/platform/msm_sdcc.1/by-name/cust no_reboot
+	
+	mkdir /mpt 0775 system system
+	wait /dev/block/platform/msm_sdcc.1/by-name/mpt
+	exec /sbin/setup_fs_static /dev/block/platform/msm_sdcc.1/by-name/mpt no_reboot
+
+on fs
+	wait /dev/block/platform/msm_sdcc.1/by-name/cust
+    	exec /system/bin/e2fsck -y /dev/block/platform/msm_sdcc.1/by-name/cust
+    	mount ext4 /dev/block/platform/msm_sdcc.1/by-name/cust /cust ro nodev barrier=1 noauto_da_alloc
+
+	wait /dev/block/platform/msm_sdcc.1/by-name/mpt
+    	exec /system/bin/e2fsck -y /dev/block/platform/msm_sdcc.1/by-name/mpt
+    	mount ext4 /dev/block/platform/msm_sdcc.1/by-name/mpt /mpt nodev barrier=1 noauto_da_alloc
+
+on post-fs-data
+    mkdir /data/tombstones 0771 system system
+    mkdir /tombstones/modem 0771 system system
+    
+    #cust partition permission change
+
+    chown system system /cust
+    chmod 0775 /cust
+    
+    chown system system /mpt
+    chmod 0775 /mpt
+
+# Disable LGEVPN for G2 mini LTE, km.sa@lge.com
+# LGE_UPDATE_START, 2013/10/17, for LG VPN, encryption-vpn@lge.com
+#on boot
+#
+#   insmod /system/lib/modules/vpnclient.ko ssh_procfs_uid=1000 ssh_procfs_gid=1000
+#
+#service vpnclientpm /system/bin/vpnclientpm -O /data/data/com.ipsec.vpnclient/vpnclientpm.txt -D*Pm*=99,*Netconfig*=99 -K*=99 -u 1000
+#   # uid dropped to system when capabilities are set
+#     class main
+#     group system net_admin net_raw
+#     disabled
+#
+#service secstarter /system/bin/secstarter
+#     class main
+#     user system
+#     group system net_admin net_raw
+#
+# LGE_UPDATE_END, 2013/10/17, for LG VPN, encryption-vpn@lge.com
+# Disable LGEVPN for G2 mini LTE, km.sa@lge.com
