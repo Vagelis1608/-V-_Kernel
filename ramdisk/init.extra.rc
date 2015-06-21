@@ -1,13 +1,17 @@
 # -V- Kernel Mods
 # by Vagelis1608 @xda-developers
 
+on init
+    mkdir /sd-ext 0755 root root
+    symlink /storage/external_SD /extSD
+
 on property:sys.boot_completed=1
-     start sysinit
+    start sysinit
 
 service sysinit /sbin/sysinit.sh
-     oneshot
-     class late_start
-     user root
-     group root
-     disabled
+    oneshot
+    class late_start
+    user root
+    group root
+    disabled
 
